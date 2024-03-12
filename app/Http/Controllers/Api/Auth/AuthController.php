@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiValidation;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\LoginRequest;
 
 class AuthController extends Controller
@@ -20,10 +21,9 @@ class AuthController extends Controller
     {
         try {
             $credentials = $request->only('email', 'password');
-            $request->authenticate($credentials);
-            if ($credentials) {
+            // $request->authenticate($credentials);
+            if (Auth::attempt($credentials)) {
                 $user = Auth::user();
-
                 if ($user instanceof User) {
                     $token = $user->createToken('api', ['role:user'])->plainTextToken;
                     $data['token'] = $token;
